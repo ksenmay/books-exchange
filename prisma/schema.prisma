@@ -1,0 +1,123 @@
+generator client {
+  provider     = "prisma-client"
+  output       = "../generated/prisma"
+  moduleFormat = "cjs"
+}
+
+datasource db {
+  provider = "postgresql"
+}
+
+model books {
+  id           Int            @id @default(autoincrement())
+  title        String         @db.VarChar(150)
+  ownerid      Int?
+  authorsnames String?        @db.VarChar(255)
+  description  String?
+  genre        String?        @db.VarChar(100)
+  condition    bookcondition?
+  price        Float?         @db.Real
+  createdat    DateTime?      @default(now()) @db.Timestamp(6)
+  users        users?         @relation(fields: [ownerid], references: [id], onUpdate: NoAction, map: "fkbooksowner")
+  exchanges    exchanges[]
+  favorites    favorites[]
+  quotes       quotes[]
+  reviews      reviews[]
+}
+
+model exchanges {
+  id                                Int             @id @default(autoincrement())
+  operationtype                     operationtype?
+  senderid                          Int?
+  receiverid                        Int?
+  status                            exchangestatus?
+  date                              DateTime?       @default(now()) @db.Timestamp(6)
+  bookid                            Int?
+  books                             books?          @relation(fields: [bookid], references: [id], onUpdate: NoAction, map: "fkexchangesbook")
+  users_exchanges_receiveridTousers users?          @relation("exchanges_receiveridTousers", fields: [receiverid], references: [id], onUpdate: NoAction, map: "fkexchangesreceiver")
+  users_exchanges_senderidTousers   users?          @relation("exchanges_senderidTousers", fields: [senderid], references: [id], onUpdate: NoAction, map: "fkexchangessender")
+}
+
+model favorites {
+  id        Int       @id @default(autoincrement())
+  bookid    Int?
+  userid    Int?
+  createdat DateTime? @default(now()) @db.Timestamp(6)
+  books     books?    @relation(fields: [bookid], references: [id], onDelete: Cascade, onUpdate: NoAction, map: "fkfavoritesbook")
+  users     users?    @relation(fields: [userid], references: [id], onDelete: Cascade, onUpdate: NoAction, map: "fkfavoritesuser")
+
+  @@unique([userid, bookid], map: "uniquefavorites")
+}
+
+model quotes {
+  id        Int       @id @default(autoincrement())
+  userid    Int?
+  bookid    Int?
+  text      String
+  createdat DateTime? @default(now()) @db.Timestamp(6)
+  books     books?    @relation(fields: [bookid], references: [id], onUpdate: NoAction, map: "fkquotesbook")
+  users     users?    @relation(fields: [userid], references: [id], onUpdate: NoAction, map: "fkquotesuser")
+}
+
+/// This table contains check constraints and requires additional setup for migrations. Visit https://pris.ly/d/check-constraints for more info.
+model reviews {
+  id          Int       @id @default(autoincrement())
+  userid      Int?
+  bookid      Int?
+  rating      Float?    @default(0) @db.Real
+  description String
+  createdat   DateTime? @default(now()) @db.Timestamp(6)
+  books       books?    @relation(fields: [bookid], references: [id], onUpdate: NoAction, map: "fkreviewsbook")
+  users       users?    @relation(fields: [userid], references: [id], onUpdate: NoAction, map: "fkreviewsuser")
+}
+
+/// This table contains check constraints and requires additional setup for migrations. Visit https://pris.ly/d/check-constraints for more info.
+model userinfo {
+  id        Int       @id @default(autoincrement())
+  userid    Int?
+  role      userrole? @default(default_user)
+  email     String?   @db.VarChar(100)
+  fullname  String?   @db.VarChar(100)
+  location  String?   @db.VarChar(100)
+  avatarurl String?   @db.VarChar(255)
+  rating    Float?    @default(0) @db.Real
+  users     users?    @relation(fields: [userid], references: [id], onDelete: Cascade, onUpdate: NoAction, map: "fkuserinfouser")
+}
+
+model users {
+  id                                    Int         @id @default(autoincrement())
+  username                              String      @unique @db.VarChar(50)
+  password                              String      @db.VarChar(100)
+  createdat                             DateTime?   @default(now()) @db.Timestamp(6)
+  books                                 books[]
+  exchanges_exchanges_receiveridTousers exchanges[] @relation("exchanges_receiveridTousers")
+  exchanges_exchanges_senderidTousers   exchanges[] @relation("exchanges_senderidTousers")
+  favorites                             favorites[]
+  quotes                                quotes[]
+  reviews                               reviews[]
+  userinfo                              userinfo[]
+}
+
+enum bookcondition {
+  new
+  medium
+  with_a_defect
+  old
+}
+
+enum exchangestatus {
+  pending
+  approved
+  rejected
+  completed
+}
+
+enum operationtype {
+  sale
+  exchange
+}
+
+enum userrole {
+  admin
+  default_user
+}
