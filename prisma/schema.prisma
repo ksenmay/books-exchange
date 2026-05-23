@@ -59,7 +59,6 @@ model quotes {
   users     users?    @relation(fields: [userid], references: [id], onUpdate: NoAction, map: "fkquotesuser")
 }
 
-/// This table contains check constraints and requires additional setup for migrations. Visit https://pris.ly/d/check-constraints for more info.
 model reviews {
   id          Int       @id @default(autoincrement())
   userid      Int?
@@ -71,7 +70,6 @@ model reviews {
   users       users?    @relation(fields: [userid], references: [id], onUpdate: NoAction, map: "fkreviewsuser")
 }
 
-/// This table contains check constraints and requires additional setup for migrations. Visit https://pris.ly/d/check-constraints for more info.
 model userinfo {
   id        Int       @id @default(autoincrement())
   userid    Int?
@@ -120,4 +118,14 @@ enum operationtype {
 enum userrole {
   admin
   default_user
+}
+
+model ErrorLog {
+  id        String   @id @default(uuid())
+  message   String
+  stack     String?
+  context   String?
+  timestamp DateTime @default(now())
+
+  @@map("errorLog")
 }
