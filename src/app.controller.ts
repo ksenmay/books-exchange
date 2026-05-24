@@ -6,7 +6,6 @@ import { RolesGuard } from './auth/guards/roles.guard';
 import { Roles } from './auth/decorators/roles.decorator';
 import { CurrentUser } from './auth/decorators/current-user.decorator';
 import { Role } from './auth/roles/roles.enum';
-import { Injectable, UnauthorizedException } from '@nestjs/common';
 
 @Controller()
 export class AppController {

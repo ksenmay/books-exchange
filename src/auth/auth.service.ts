@@ -82,9 +82,6 @@ export class AuthService {
     };
   }
   
-  // Logout на стороне сервера (stateless JWT) обычно пустой метод, 
-  // так как клиент просто удаляет токен у себя.
-  // Если нужен blacklist токенов, нужна БД и дополнительная логика.
   async logout() {
     return { message: 'Успешный выход' };
   }

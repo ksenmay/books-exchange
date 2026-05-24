@@ -7,6 +7,9 @@ import { UsersModule } from './users/users.module';
 import { AuthModule } from './auth/auth.module';
 import { ErrorLoggerModule } from './error-logger/error-logger.module';
 import { BooksModule } from './books/books.module';
+import { QuotesModule } from './quotes/quotes.module';
+import { ReviewsModule } from './reviews/reviews.module';
+import { FavoritesModule } from './favorites/favorites.module';
 
 @Module({
   imports: [
@@ -16,6 +19,9 @@ import { BooksModule } from './books/books.module';
     AuthModule,
     ErrorLoggerModule,
     BooksModule,
+    QuotesModule,
+    ReviewsModule,
+    FavoritesModule,
   ],
   controllers: [AppController],
   providers: [AppService],

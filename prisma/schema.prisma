@@ -54,7 +54,10 @@ model quotes {
   userid    Int?
   bookid    Int?
   text      String
+  page      Int?
   createdat DateTime? @default(now()) @db.Timestamp(6)
+
+
   books     books?    @relation(fields: [bookid], references: [id], onUpdate: NoAction, map: "fkquotesbook")
   users     users?    @relation(fields: [userid], references: [id], onUpdate: NoAction, map: "fkquotesuser")
 }

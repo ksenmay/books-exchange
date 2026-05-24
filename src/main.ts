@@ -34,11 +34,8 @@ async function bootstrap() {
   const document = SwaggerModule.createDocument(app, config);
   SwaggerModule.setup('api/docs', app, document);
 
-  // --- ИСПРАВЛЕНИЕ ЗДЕСЬ ---
-  // Получаем экземпляр сервиса и создаем фильтр вручную
   const errorLoggerService = app.get(ErrorLoggerService);
   app.useGlobalFilters(new AllExceptionsFilter(errorLoggerService));
-  // -------------------------
 
   await app.listen(process.env.PORT ?? 3000);
   console.log(`Application is running on: http://localhost:3000`);

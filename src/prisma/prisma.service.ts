@@ -13,7 +13,7 @@ export class PrismaService
       connectionString: process.env.DATABASE_URL,
     });
     const adapter = new PrismaPg(pool);
-    console.log("ХУЙ "+ process.env.DATABASE_URL);
+    console.log(process.env.DATABASE_URL);
     super({ adapter });
   }
 
