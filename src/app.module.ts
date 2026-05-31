@@ -10,10 +10,11 @@ import { BooksModule } from './books/books.module';
 import { QuotesModule } from './quotes/quotes.module';
 import { ReviewsModule } from './reviews/reviews.module';
 import { FavoritesModule } from './favorites/favorites.module';
+import { EmailModule } from './email/email.module';
 
 @Module({
   imports: [
-    ConfigModule.forRoot({isGlobal: true}),
+    ConfigModule.forRoot({ isGlobal: true }),
     PrismaModule,
     UsersModule,
     AuthModule,
@@ -22,6 +23,7 @@ import { FavoritesModule } from './favorites/favorites.module';
     QuotesModule,
     ReviewsModule,
     FavoritesModule,
+    EmailModule,
   ],
   controllers: [AppController],
   providers: [AppService],

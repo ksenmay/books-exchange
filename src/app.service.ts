@@ -3,7 +3,6 @@ import { PrismaService } from './prisma/prisma.service';
 
 @Injectable()
 export class AppService {
-
   constructor(private prisma: PrismaService) {}
 
   getHello(): string {
@@ -11,7 +10,6 @@ export class AppService {
   }
 
   async test() {
-  return this.prisma.users.findMany();
+    return this.prisma.users.findMany();
   }
-
 }

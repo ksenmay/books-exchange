@@ -17,12 +17,22 @@ model books {
   genre        String?        @db.VarChar(100)
   condition    bookcondition?
   price        Float?         @db.Real
+  exchangeable Boolean?       @default(false)  
   createdat    DateTime?      @default(now()) @db.Timestamp(6)
   users        users?         @relation(fields: [ownerid], references: [id], onUpdate: NoAction, map: "fkbooksowner")
   exchanges    exchanges[]
   favorites    favorites[]
   quotes       quotes[]
   reviews      reviews[]
+  images       images[]
+}
+
+model images {
+  id        Int      @id @default(autoincrement())
+  bookid    Int
+  url       String   @db.VarChar(500)
+  createdat DateTime @default(now()) @db.Timestamp(6)
+  books     books    @relation(fields: [bookid], references: [id], onDelete: Cascade)
 }
 
 model exchanges {

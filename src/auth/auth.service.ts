@@ -1,26 +1,41 @@
-// src/auth/auth.service.ts
-import { Injectable, UnauthorizedException, NotFoundException } from '@nestjs/common';
+import {
+  Injectable,
+  UnauthorizedException,
+  NotFoundException,
+} from '@nestjs/common';
 import { JwtService } from '@nestjs/jwt';
 import { UsersService } from '../users/users.service';
 import * as bcrypt from 'bcrypt';
 import { CreateUserDto } from '../users/dto/create-user.dto';
+import { EmailPublisher } from '../email/email.publisher';
 
 @Injectable()
 export class AuthService {
   constructor(
     private usersService: UsersService,
     private jwtService: JwtService,
+    private emailPublisher: EmailPublisher,
   ) {}
 
   async register(dto: CreateUserDto) {
-    // Сервис создания пользователя должен возвращать созданного юзера и токен (или только юзера, а токен здесь)
-    // Предположим, usersService.create возвращает объект пользователя без пароля
     const user = await this.usersService.create(dto);
-    
-    // Генерируем токен сразу после регистрации (опционально, зависит от требований)
+
+    try {
+      const email = user.userinfo?.[0]?.email;
+      if (email) {
+        await this.emailPublisher.publishUserRegistered({
+          email,
+          username: user.username,
+          fullname: user.userinfo?.[0]?.fullname ?? undefined,
+        });
+      }
+    } catch (err: any) {
+      console.error('Failed to publish email event:', err?.message ?? err);
+    }
+
     const role = user.userinfo?.[0]?.role ?? 'default_user';
     const payload = { sub: user.id, username: user.username, role };
-    
+
     return {
       user,
       access_token: this.jwtService.sign(payload),
@@ -46,14 +61,12 @@ export class AuthService {
       role: role,
     };
 
-    // Формируем объект пользователя для ответа (без чувствительных данных)
     const userResponse = {
       id: user.id,
       username: user.username,
       email: user.userinfo?.[0]?.email,
       fullName: user.userinfo?.[0]?.fullname,
       role: role,
-      // ... другие поля профиля
     };
 
     return {
@@ -81,7 +94,7 @@ export class AuthService {
       createdAt: user.createdat,
     };
   }
-  
+
   async logout() {
     return { message: 'Успешный выход' };
   }

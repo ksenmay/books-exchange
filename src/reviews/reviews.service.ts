@@ -10,11 +10,7 @@ import { CreateReviewDto } from './dto/create-review.dto';
 export class ReviewsService {
   constructor(private readonly prisma: PrismaService) {}
 
-  async create(
-    bookId: number,
-    userId: number,
-    dto: CreateReviewDto,
-  ) {
+  async create(bookId: number, userId: number, dto: CreateReviewDto) {
     const book = await this.prisma.books.findUnique({
       where: {
         id: bookId,
@@ -22,9 +18,7 @@ export class ReviewsService {
     });
 
     if (!book) {
-      throw new NotFoundException(
-        'Book not found',
-      );
+      throw new NotFoundException('Book not found');
     }
 
     return this.prisma.reviews.create({
@@ -57,31 +51,19 @@ export class ReviewsService {
     });
   }
 
-  async delete(
-    reviewId: number,
-    currentUserId: number,
-    role: string,
-  ) {
-    const review =
-      await this.prisma.reviews.findUnique({
-        where: {
-          id: reviewId,
-        },
-      });
+  async delete(reviewId: number, currentUserId: number, role: string) {
+    const review = await this.prisma.reviews.findUnique({
+      where: {
+        id: reviewId,
+      },
+    });
 
     if (!review) {
-      throw new NotFoundException(
-        'Review not found',
-      );
+      throw new NotFoundException('Review not found');
     }
 
-    if (
-      review.userid !== currentUserId &&
-      role !== 'admin'
-    ) {
-      throw new ForbiddenException(
-        'You cannot delete this review',
-      );
+    if (review.userid !== currentUserId && role !== 'admin') {
+      throw new ForbiddenException('You cannot delete this review');
     }
 
     await this.prisma.reviews.delete({

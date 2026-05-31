@@ -8,39 +8,28 @@ import { PrismaService } from '../prisma/prisma.service';
 
 @Injectable()
 export class FavoritesService {
-  constructor(
-    private readonly prisma: PrismaService,
-  ) {}
+  constructor(private readonly prisma: PrismaService) {}
 
-  async add(
-    userId: number,
-    bookId: number,
-  ) {
-    const book =
-      await this.prisma.books.findUnique({
-        where: {
-          id: bookId,
-        },
-      });
+  async add(userId: number, bookId: number) {
+    const book = await this.prisma.books.findUnique({
+      where: {
+        id: bookId,
+      },
+    });
 
     if (!book) {
-      throw new NotFoundException(
-        'Book not found',
-      );
+      throw new NotFoundException('Book not found');
     }
 
-    const existing =
-      await this.prisma.favorites.findFirst({
-        where: {
-          userid: userId,
-          bookid: bookId,
-        },
-      });
+    const existing = await this.prisma.favorites.findFirst({
+      where: {
+        userid: userId,
+        bookid: bookId,
+      },
+    });
 
     if (existing) {
-      throw new ConflictException(
-        'Book already in favorites',
-      );
+      throw new ConflictException('Book already in favorites');
     }
 
     return this.prisma.favorites.create({
@@ -51,22 +40,16 @@ export class FavoritesService {
     });
   }
 
-  async remove(
-    userId: number,
-    bookId: number,
-  ) {
-    const favorite =
-      await this.prisma.favorites.findFirst({
-        where: {
-          userid: userId,
-          bookid: bookId,
-        },
-      });
+  async remove(userId: number, bookId: number) {
+    const favorite = await this.prisma.favorites.findFirst({
+      where: {
+        userid: userId,
+        bookid: bookId,
+      },
+    });
 
     if (!favorite) {
-      throw new NotFoundException(
-        'Favorite not found',
-      );
+      throw new NotFoundException('Favorite not found');
     }
 
     await this.prisma.favorites.delete({
@@ -76,8 +59,7 @@ export class FavoritesService {
     });
 
     return {
-      message:
-        'Book removed from favorites',
+      message: 'Book removed from favorites',
     };
   }
 

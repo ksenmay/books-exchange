@@ -12,18 +12,12 @@ import {
 import { QuotesService } from './quotes.service';
 import { JwtAuthGuard } from '../auth/guards/jwt-auth.guard';
 import { CreateQuoteDto } from './dto/create-quote.dto';
-import {
-  ApiBearerAuth,
-  ApiOperation,
-  ApiTags,
-} from '@nestjs/swagger';
+import { ApiBearerAuth, ApiOperation, ApiTags } from '@nestjs/swagger';
 
 @ApiTags('Quotes')
 @Controller()
 export class QuotesController {
-  constructor(
-    private readonly quotesService: QuotesService,
-  ) {}
+  constructor(private readonly quotesService: QuotesService) {}
 
   @ApiOperation({
     summary: 'Get quotes by book',
@@ -52,11 +46,7 @@ export class QuotesController {
     @Req()
     req: any,
   ) {
-    return this.quotesService.create(
-      bookId,
-      req.user.sub,
-      dto,
-    );
+    return this.quotesService.create(bookId, req.user.sub, dto);
   }
 
   @ApiBearerAuth()
@@ -72,10 +62,6 @@ export class QuotesController {
     @Req()
     req: any,
   ) {
-    return this.quotesService.delete(
-      quoteId,
-      req.user.sub,
-      req.user.role,
-    );
+    return this.quotesService.delete(quoteId, req.user.sub, req.user.role);
   }
 }

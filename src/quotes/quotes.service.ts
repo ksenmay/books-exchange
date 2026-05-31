@@ -10,11 +10,7 @@ import { CreateQuoteDto } from './dto/create-quote.dto';
 export class QuotesService {
   constructor(private readonly prisma: PrismaService) {}
 
-  async create(
-    bookId: number,
-    userId: number,
-    dto: CreateQuoteDto,
-  ) {
+  async create(bookId: number, userId: number, dto: CreateQuoteDto) {
     const book = await this.prisma.books.findUnique({
       where: { id: bookId },
     });
@@ -49,11 +45,7 @@ export class QuotesService {
     });
   }
 
-  async delete(
-    quoteId: number,
-    currentUserId: number,
-    role: string,
-  ) {
+  async delete(quoteId: number, currentUserId: number, role: string) {
     const quote = await this.prisma.quotes.findUnique({
       where: {
         id: quoteId,
@@ -64,13 +56,8 @@ export class QuotesService {
       throw new NotFoundException('Quote not found');
     }
 
-    if (
-      quote.userid !== currentUserId &&
-      role !== 'admin'
-    ) {
-      throw new ForbiddenException(
-        'You cannot delete this quote',
-      );
+    if (quote.userid !== currentUserId && role !== 'admin') {
+      throw new ForbiddenException('You cannot delete this quote');
     }
 
     await this.prisma.quotes.delete({

@@ -1,25 +1,37 @@
 import { IsString, IsOptional, IsBoolean, IsInt } from 'class-validator';
 import { Type } from 'class-transformer';
+import { ApiPropertyOptional } from '@nestjs/swagger';
 
 export class QueryBooksDto {
+  @ApiPropertyOptional({
+    example: 'Фантастика',
+    description: 'Фильтр по жанру',
+  })
   @IsOptional()
   @IsString()
-  status?: string; // фильтрация по статусу (если есть в БД)
+  genre?: string;
 
+  @ApiPropertyOptional({
+    example: 'Мастер',
+    description: 'Поиск по названию или автору',
+  })
   @IsOptional()
-  @IsBoolean()
-  exchangeable?: boolean;
+  @IsString()
+  search?: string;
 
+  @ApiPropertyOptional({ example: 1, description: 'Фильтр по ID владельца' })
   @IsOptional()
   @Type(() => Number)
   @IsInt()
   ownerId?: number;
 
+  @ApiPropertyOptional({ example: true, description: 'Только для обмена' })
   @IsOptional()
-  @IsString()
-  search?: string; // поиск по названию или автору
+  @IsBoolean()
+  exchangeable?: boolean;
 
+  @ApiPropertyOptional({ example: 'active', description: 'Статус книги' })
   @IsOptional()
   @IsString()
-  genre?: string;
+  status?: string;
 }

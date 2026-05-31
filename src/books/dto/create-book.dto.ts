@@ -1,6 +1,13 @@
-import { IsString, IsOptional, IsNumber, Min, IsBoolean, IsEnum, IsArray } from 'class-validator';
+import {
+  IsString,
+  IsOptional,
+  IsNumber,
+  Min,
+  IsBoolean,
+  IsEnum,
+} from 'class-validator';
+import { ApiProperty, ApiPropertyOptional } from '@nestjs/swagger';
 
-// Используем enum из схемы Prisma (в нижнем регистре, как в schema.prisma)
 export enum BookCondition {
   new = 'new',
   medium = 'medium',
@@ -9,29 +16,43 @@ export enum BookCondition {
 }
 
 export class CreateBookDto {
+  @ApiProperty({ example: 'Мастер и Маргарита', description: 'Название книги' })
   @IsString()
   title!: string;
 
+  @ApiProperty({ example: 'Михаил Булгаков', description: 'Автор(ы) книги' })
   @IsString()
-  authorsnames!: string; // В схеме Prisma поле называется authorsnames
+  authorsnames!: string;
 
+  @ApiPropertyOptional({
+    example: 'Классика русской литературы',
+    description: 'Описание',
+  })
   @IsOptional()
   @IsString()
   description?: string;
 
+  @ApiPropertyOptional({ example: 'Роман', description: 'Жанр' })
   @IsOptional()
   @IsString()
   genre?: string;
 
+  @ApiPropertyOptional({
+    enum: BookCondition,
+    example: 'new',
+    description: 'Состояние книги',
+  })
   @IsOptional()
   @IsEnum(BookCondition)
   condition?: BookCondition;
 
+  @ApiPropertyOptional({ example: 500, description: 'Цена', minimum: 0 })
   @IsOptional()
   @IsNumber()
   @Min(0)
   price?: number;
 
+  @ApiProperty({ example: true, description: 'Доступна для обмена' })
   @IsBoolean()
-  exchangeable!: boolean; // Добавлено поле, так как оно часто нужно, но проверьте схему
+  exchangeable!: boolean;
 }

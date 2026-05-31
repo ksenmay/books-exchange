@@ -4,13 +4,13 @@ import {
   ArgumentsHost,
   HttpException,
   HttpStatus,
-  Injectable, // Импортируем Injectable
+  Injectable, 
 } from '@nestjs/common';
 import { Request, Response } from 'express';
 import { ErrorLoggerService } from '../../error-logger/error-logger.service';
 
 @Catch()
-@Injectable() // Добавляем декоратор Injectable
+@Injectable() 
 export class AllExceptionsFilter implements ExceptionFilter {
   constructor(private readonly errorLoggerService: ErrorLoggerService) {}
 
@@ -41,7 +41,6 @@ export class AllExceptionsFilter implements ExceptionFilter {
 
     const errorContext = `${request.method} ${request.url}`;
 
-    // Логирование ошибки
     await this.errorLoggerService.logError({
       message,
       stack,

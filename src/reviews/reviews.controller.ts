@@ -10,11 +10,7 @@ import {
   UseGuards,
 } from '@nestjs/common';
 
-import {
-  ApiBearerAuth,
-  ApiOperation,
-  ApiTags,
-} from '@nestjs/swagger';
+import { ApiBearerAuth, ApiOperation, ApiTags } from '@nestjs/swagger';
 
 import { ReviewsService } from './reviews.service';
 import { JwtAuthGuard } from '../auth/guards/jwt-auth.guard';
@@ -23,9 +19,7 @@ import { CreateReviewDto } from './dto/create-review.dto';
 @ApiTags('Reviews')
 @Controller()
 export class ReviewsController {
-  constructor(
-    private readonly reviewsService: ReviewsService,
-  ) {}
+  constructor(private readonly reviewsService: ReviewsService) {}
 
   @ApiOperation({
     summary: 'Get reviews by book',
@@ -35,9 +29,7 @@ export class ReviewsController {
     @Param('bookId', ParseIntPipe)
     bookId: number,
   ) {
-    return this.reviewsService.findByBook(
-      bookId,
-    );
+    return this.reviewsService.findByBook(bookId);
   }
 
   @ApiBearerAuth()
@@ -56,11 +48,7 @@ export class ReviewsController {
     @Req()
     req: any,
   ) {
-    return this.reviewsService.create(
-      bookId,
-      req.user.sub,
-      dto,
-    );
+    return this.reviewsService.create(bookId, req.user.sub, dto);
   }
 
   @ApiBearerAuth()
@@ -76,10 +64,6 @@ export class ReviewsController {
     @Req()
     req: any,
   ) {
-    return this.reviewsService.delete(
-      reviewId,
-      req.user.sub,
-      req.user.role,
-    );
+    return this.reviewsService.delete(reviewId, req.user.sub, req.user.role);
   }
 }
